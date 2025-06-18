@@ -115,13 +115,13 @@ class SocialMediaManager {
       throw new \Exception('Product not found');
     }
 
-    // Prepare post data
+    // Prepare post data.
     $post_data = [
       'message' => $post['message'],
       'access_token' => $access_token,
     ];
 
-    // Add image if available
+    // Add image if available.
     if ($post['image_fid']) {
       $file = File::load($post['image_fid']);
       if ($file) {
@@ -130,11 +130,11 @@ class SocialMediaManager {
       }
     }
 
-    // Add product link
+    // Add product link.
     $product_url = $product->toUrl('canonical', ['absolute' => TRUE])->toString();
     $post_data['link'] = $product_url;
 
-    // Make API call to Facebook
+    // Make API call to Facebook.
     $response = $this->httpClient->post("https://graph.facebook.com/v18.0/{$page_id}/feed", [
       'form_params' => $post_data,
     ]);
@@ -170,7 +170,7 @@ class SocialMediaManager {
       throw new \Exception('Product not found');
     }
 
-    // Instagram requires an image
+    // Instagram requires an image.
     $image_url = NULL;
     if ($post['image_fid']) {
       $file = File::load($post['image_fid']);
@@ -178,7 +178,7 @@ class SocialMediaManager {
         $image_url = file_create_url($file->getFileUri());
       }
     } else {
-      // Try to get product's default image
+      // Try to get product's default image.
       if ($product->hasField('field_image') && !$product->get('field_image')->isEmpty()) {
         $image_entity = $product->get('field_image')->entity;
         if ($image_entity) {
@@ -191,7 +191,7 @@ class SocialMediaManager {
       throw new \Exception('Instagram requires an image, but none was found');
     }
 
-    // Step 1: Create media container
+    // Step 1: Create media container.
     $container_data = [
       'image_url' => $image_url,
       'caption' => $post['message'],
@@ -209,7 +209,7 @@ class SocialMediaManager {
 
     $creation_id = $container_result['id'];
 
-    // Step 2: Publish the media
+    // Step 2: Publish the media.
     $publish_data = [
       'creation_id' => $creation_id,
       'access_token' => $access_token,

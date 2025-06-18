@@ -7,5 +7,5 @@ dependencies:
   - drupal:commerce_product
   - drupal:file
   - drupal:datetime
-  - drupal:queue_ui (optional)
+  - drupal:queue_ui
 configure: commerce_social_publisher.admin_settings

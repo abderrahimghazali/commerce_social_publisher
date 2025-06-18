@@ -115,16 +115,16 @@ class SocialPublisherForm extends FormBase {
       '#description' => $this->t('Upload an image to share with the post. If no image is uploaded, the product\'s default image will be used.'),
       '#upload_validators' => [
         'file_validate_extensions' => ['png gif jpg jpeg'],
-        'file_validate_size' => [5 * 1024 * 1024], // 5MB max
+        'file_validate_size' => [5 * 1024 * 1024], // 5MB max.
       ],
       '#upload_location' => 'public://social_media_images/',
     ];
 
-    // Get default message template
+    // Get default message template.
     $config = $this->config('commerce_social_publisher.settings');
     $default_template = $config->get('default_message_template') ?: 'Check out this amazing product: [product:title]';
 
-    // Replace tokens in default message
+    // Replace tokens in default message.
     $token_service = \Drupal::token();
     $default_message = $token_service->replace($default_template, [
       'product' => $commerce_product,
@@ -216,7 +216,7 @@ class SocialPublisherForm extends FormBase {
     $schedule_post = $form_state->getValue('schedule_post');
     $image_fid = NULL;
 
-    // Handle image upload
+    // Handle image upload.
     $image = $form_state->getValue('image');
     if (!empty($image[0])) {
       $file = File::load($image[0]);
@@ -227,7 +227,7 @@ class SocialPublisherForm extends FormBase {
       }
     }
 
-    // Prepare post data
+    // Prepare post data.
     $post_data = [
       'product_id' => $product->id(),
       'user_id' => $this->currentUser->id(),
@@ -243,12 +243,12 @@ class SocialPublisherForm extends FormBase {
       $post_data['scheduled_time'] = $scheduled_date->getTimestamp();
     }
 
-    // Save to database
+    // Save to database.
     $post_id = $this->database->insert('commerce_social_publisher_posts')
       ->fields($post_data)
       ->execute();
 
-    // Add to queue for processing
+    // Add to queue for processing.
     $queue = $this->queueFactory->get('social_media_publisher');
     $queue_data = [
       'post_id' => $post_id,
@@ -263,7 +263,7 @@ class SocialPublisherForm extends FormBase {
       $this->messenger()->addMessage($this->t('Your post is being published to the selected platforms.'));
     }
 
-    // Redirect back to product page
+    // Redirect back to product page.
     $form_state->setRedirect('entity.commerce_product.canonical', [
       'commerce_product' => $product->id(),
     ]);

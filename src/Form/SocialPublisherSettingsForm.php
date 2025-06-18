@@ -161,7 +161,7 @@ class SocialPublisherSettingsForm extends ConfigFormBase {
       ->set('instagram_access_token', $form_state->getValue('instagram_access_token'))
       ->set('default_message_template', $form_state->getValue('default_message_template'));
 
-    // Only update app secret if a new value was provided
+    // Only update app secret if a new value was provided.
     $app_secret = $form_state->getValue('facebook_app_secret');
     if (!empty($app_secret)) {
       $config->set('facebook_app_secret', $app_secret);

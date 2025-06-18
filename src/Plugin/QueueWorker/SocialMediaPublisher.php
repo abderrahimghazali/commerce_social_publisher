@@ -72,7 +72,7 @@ class SocialMediaPublisher extends QueueWorkerBase implements ContainerFactoryPl
     $post_id = $data['post_id'];
     $action = $data['action'];
 
-    // Load post data
+    // Load post data.
     $post = $this->database->select('commerce_social_publisher_posts', 'p')
       ->fields('p')
       ->condition('id', $post_id)
@@ -85,7 +85,7 @@ class SocialMediaPublisher extends QueueWorkerBase implements ContainerFactoryPl
       return;
     }
 
-    // Check if it's a scheduled post and if it's time to publish
+    // Check if it's a scheduled post and if it's time to publish.
     if ($action === 'schedule' && $post['scheduled_time'] > time()) {
       // Not time yet, re-queue for later
       $queue = \Drupal::queue('social_media_publisher');
@@ -94,7 +94,7 @@ class SocialMediaPublisher extends QueueWorkerBase implements ContainerFactoryPl
     }
 
     try {
-      // Publish to social media platforms
+      // Publish to social media platforms.
       $platforms = json_decode($post['platforms'], TRUE);
       $success = $this->socialMediaManager->publishPost($post, $platforms);
 
@@ -115,7 +115,7 @@ class SocialMediaPublisher extends QueueWorkerBase implements ContainerFactoryPl
       }
     }
     catch (\Exception $e) {
-      // Update status to failed
+      // Update status to failed.
       $this->database->update('commerce_social_publisher_posts')
         ->fields(['status' => 'failed'])
         ->condition('id', $post_id)
