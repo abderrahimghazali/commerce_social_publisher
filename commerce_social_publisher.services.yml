@@ -1,0 +1,4 @@
+services:
+  commerce_social_publisher.social_media_manager:
+    class: Drupal\commerce_social_publisher\Service\SocialMediaManager
+    arguments: ['@config.factory', '@entity_type.manager', '@http_client', '@logger.factory']

@@ -1,0 +1,71 @@
+<?php
+
+/**
+ * @file
+ * Contains commerce_social_publisher.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Session\AccountInterface;
+
+/**
+ * Implements hook_help().
+ */
+function commerce_social_publisher_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.commerce_social_publisher':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('The Commerce Social Publisher module adds social media sharing functionality to Commerce Product pages.') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_entity_operation().
+ */
+function commerce_social_publisher_entity_operation(EntityInterface $entity) {
+  $operations = [];
+
+  if ($entity->getEntityTypeId() == 'commerce_product') {
+    $account = \Drupal::currentUser();
+    if ($account->hasPermission('publish to social media')) {
+      $operations['share'] = [
+        'title' => t('Share'),
+        'url' => \Drupal\Core\Url::fromRoute('commerce_social_publisher.product_share', [
+          'commerce_product' => $entity->id(),
+        ]),
+        'weight' => 15,
+      ];
+    }
+  }
+
+  return $operations;
+}
+
+/**
+ * Implements hook_cron().
+ */
+function commerce_social_publisher_cron() {
+  // Process scheduled posts
+  $queue = \Drupal::queue('social_media_publisher');
+  $queue_worker = \Drupal::service('plugin.manager.queue_worker')->createInstance('social_media_publisher');
+
+  $end = time() + 15; // Process for 15 seconds
+  while (time() < $end && ($item = $queue->claimItem())) {
+    try {
+      $queue_worker->processItem($item->data);
+      $queue->deleteItem($item);
+    }
+    catch (Exception $e) {
+      \Drupal::logger('commerce_social_publisher')->error('Error processing queue item: @error', [
+        '@error' => $e->getMessage(),
+      ]);
+      $queue->releaseItem($item);
+    }
+  }
+}

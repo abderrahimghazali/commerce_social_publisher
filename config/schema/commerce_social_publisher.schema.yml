@@ -1,0 +1,31 @@
+commerce_social_publisher.settings:
+  type: config_object
+  label: 'Commerce Social Publisher settings'
+  mapping:
+    enabled_platforms:
+      type: sequence
+      label: 'Enabled platforms'
+      sequence:
+        type: string
+        label: 'Platform name'
+    facebook_app_id:
+      type: string
+      label: 'Facebook App ID'
+    facebook_app_secret:
+      type: string
+      label: 'Facebook App Secret'
+    facebook_page_id:
+      type: string
+      label: 'Facebook Page ID'
+    facebook_access_token:
+      type: string
+      label: 'Facebook Access Token'
+    instagram_account_id:
+      type: string
+      label: 'Instagram Account ID'
+    instagram_access_token:
+      type: string
+      label: 'Instagram Access Token'
+    default_message_template:
+      type: string
+      label: 'Default message template'

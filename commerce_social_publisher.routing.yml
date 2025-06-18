@@ -1,0 +1,23 @@
+commerce_social_publisher.product_share:
+  path: '/product/{commerce_product}/share'
+  defaults:
+    _form: '\Drupal\commerce_social_publisher\Form\SocialPublisherForm'
+    _title: 'Share Product'
+  requirements:
+    _permission: 'publish to social media'
+    commerce_product: \d+
+  options:
+    _admin_route: TRUE
+    parameters:
+      commerce_product:
+        type: entity:commerce_product
+
+commerce_social_publisher.admin_settings:
+  path: '/admin/commerce/config/social-publisher'
+  defaults:
+    _form: '\Drupal\commerce_social_publisher\Form\SocialPublisherSettingsForm'
+    _title: 'Social Publisher Settings'
+  requirements:
+    _permission: 'administer social media publishing'
+  options:
+    _admin_route: TRUE

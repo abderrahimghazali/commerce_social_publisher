@@ -1,0 +1,5 @@
+commerce_social_publisher.product_share:
+  route_name: commerce_social_publisher.product_share
+  title: 'Share'
+  base_route: entity.commerce_product.canonical
+  weight: 15

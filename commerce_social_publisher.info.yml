@@ -1,0 +1,11 @@
+name: Commerce Social Publisher
+type: module
+description: 'Adds social media publishing functionality to Commerce Product pages'
+core_version_requirement: ^10
+package: Commerce (contrib)
+dependencies:
+  - drupal:commerce_product
+  - drupal:file
+  - drupal:datetime
+  - drupal:queue_ui (optional)
+configure: commerce_social_publisher.admin_settings

@@ -1,0 +1,93 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for Commerce Social Publisher.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function commerce_social_publisher_install() {
+  // Create default configuration
+  $config = \Drupal::configFactory()->getEditable('commerce_social_publisher.settings');
+  $config->set('enabled_platforms', ['facebook', 'instagram']);
+  $config->set('facebook_app_id', '');
+  $config->set('facebook_app_secret', '');
+  $config->set('default_message_template', 'Check out this amazing product: [product:title]');
+  $config->save();
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function commerce_social_publisher_uninstall() {
+  // Remove configuration
+  \Drupal::configFactory()->getEditable('commerce_social_publisher.settings')->delete();
+}
+
+/**
+ * Implements hook_schema().
+ */
+function commerce_social_publisher_schema() {
+  $schema['commerce_social_publisher_posts'] = [
+    'description' => 'Stores social media post data and status',
+    'fields' => [
+      'id' => [
+        'type' => 'serial',
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique post ID.',
+      ],
+      'product_id' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'description' => 'The commerce product ID.',
+      ],
+      'user_id' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'description' => 'The user who created the post.',
+      ],
+      'platforms' => [
+        'type' => 'text',
+        'description' => 'JSON array of platforms to publish to.',
+      ],
+      'message' => [
+        'type' => 'text',
+        'description' => 'The post message.',
+      ],
+      'image_fid' => [
+        'type' => 'int',
+        'description' => 'File ID of the image to share.',
+      ],
+      'scheduled_time' => [
+        'type' => 'int',
+        'description' => 'Unix timestamp for scheduled publishing.',
+      ],
+      'status' => [
+        'type' => 'varchar',
+        'length' => 20,
+        'default' => 'pending',
+        'description' => 'Post status: pending, published, failed.',
+      ],
+      'created' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'description' => 'Unix timestamp when the post was created.',
+      ],
+      'published' => [
+        'type' => 'int',
+        'description' => 'Unix timestamp when the post was published.',
+      ],
+    ],
+    'primary key' => ['id'],
+    'indexes' => [
+      'product_id' => ['product_id'],
+      'user_id' => ['user_id'],
+      'status' => ['status'],
+      'scheduled_time' => ['scheduled_time'],
+    ],
+  ];
+
+  return $schema;
+}
